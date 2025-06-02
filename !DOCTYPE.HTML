@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Para K</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+    .te-amo {
+      position: absolute;
+      color: #ff69b4;
+      font-size: 2rem;
+      font-family: 'Poppins', sans-serif;
+      pointer-events: none;
+      animation: fadeOut 2s ease-out forwards;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(2);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("matrixCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const fontSize = 20;
+    const totalColumns = Math.floor(canvas.width / fontSize);
+    const columnsToUse = Math.floor(totalColumns * 0.6); // 60% de columnas activas
+    const activeColumns = [];
+
+    while (activeColumns.length < columnsToUse) {
+      const col = Math.floor(Math.random() * totalColumns);
+      if (!activeColumns.includes(col)) {
+        activeColumns.push(col);
+      }
+    }
+
+    const drops = Array(totalColumns).fill(0);
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#ff69b4";
+      ctx.font = fontSize + "px 'Poppins', sans-serif";
+
+      for (let i = 0; i < activeColumns.length; i++) {
+        const col = activeColumns[i];
+        const x = col * fontSize;
+        const y = drops[col] * fontSize;
+
+        ctx.fillText("LOVE", x, y);
+
+        if (y > canvas.height && Math.random() > 0.98) {
+          drops[col] = 0;
+        }
+
+        drops[col] += 1; // Velocidad intermedia
+      }
+    }
+
+    setInterval(draw, 60); // Intervalo intermedio
+
+    document.addEventListener("click", function (e) {
+      const loveNote = document.createElement("div");
+      loveNote.innerText = "Te amo";
+      loveNote.className = "te-amo";
+      loveNote.style.left = e.clientX + "px";
+      loveNote.style.top = e.clientY + "px";
+      document.body.appendChild(loveNote);
+
+      setTimeout(() => {
+        loveNote.remove();
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
